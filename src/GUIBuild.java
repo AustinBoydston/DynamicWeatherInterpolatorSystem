@@ -1,5 +1,6 @@
 	import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -11,7 +12,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 	/**
-	 * @author  Administrator
+	 * Dynamic Weather Interpolator System Interface
+	 * @author  Austin Boydston
 	 * @created February 25, 2021
 	 */
 	
@@ -60,6 +62,7 @@ public class GUIBuild extends JFrame {
 	{
 	   super( "TITLE" );
 
+	   //Primary Panel
 	   pnPanel0 = new JPanel();
 	   rbgPanel0 = new ButtonGroup();
 	   GridBagLayout gbPanel0 = new GridBagLayout();
@@ -115,7 +118,7 @@ public class GUIBuild extends JFrame {
 	   pnPanel0.add( tfText1 );
 
 	   
-	   rbRdBut0 = new JRadioButton( ""  );
+	   rbRdBut0 = new JRadioButton( "Nearest Neighbor"  );
 	   rbgPanel0.add( rbRdBut0 );
 	   gbcPanel0.gridx = 0;
 	   gbcPanel0.gridy = 12;
@@ -164,17 +167,7 @@ public class GUIBuild extends JFrame {
 	   gbPanel0.setConstraints( lbLabel2, gbcPanel0 );
 	   pnPanel0.add( lbLabel2 );
 
-	   lbLabel3 = new JLabel( "Nearest Neighbor"  );
-	   gbcPanel0.gridx = 1;
-	   gbcPanel0.gridy = 12;
-	   gbcPanel0.gridwidth = 8;
-	   gbcPanel0.gridheight = 1;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 1;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( lbLabel3, gbcPanel0 );
-	   pnPanel0.add( lbLabel3 );
+	  
 
 	   lbLabel6 = new JLabel( "Dynamic Weather Interpolator System"  );
 	   gbcPanel0.gridx = 1;
@@ -196,4 +189,16 @@ public class GUIBuild extends JFrame {
 	} 
 	
 
+	//Action event handlers
+	
+	
+	//Interpolator section of handlers
+	
+	//The action event handler for the radio button labeled nearest neighbor (bRdBut0) 
+	//Calls the nearest neighbor class to process the input data.
+	private void NearestNeighborRadioButton(ActionEvent nn)
+	{
+		
+	}
+	
 }
