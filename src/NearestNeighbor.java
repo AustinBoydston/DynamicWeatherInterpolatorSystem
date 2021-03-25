@@ -10,9 +10,7 @@
 public class NearestNeighbor {
 
 	//data fields
-	private Double lat = 0.0;
-	private Double lon = 0.0;
-	
+	Station st
 	
 	//constructor
 	NearestNeighbor(Double lat, Double lon)
@@ -22,6 +20,10 @@ public class NearestNeighbor {
 	}
 	
 	
-	
+	public Station findClosest()
+	{
+		Station st = new Station();
+		return st;
+	}
 	
 }

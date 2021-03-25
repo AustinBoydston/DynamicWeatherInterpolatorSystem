@@ -17,7 +17,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 	 * @created February 25, 2021
 	 */
 	
-public class GUIBuild extends JFrame {
+public class GUIBuild extends JFrame implements ActionListeneer {
 	
 	static GUIBuild theGUIBuild;
 
@@ -196,9 +196,19 @@ public class GUIBuild extends JFrame {
 	
 	//The action event handler for the radio button labeled nearest neighbor (bRdBut0) 
 	//Calls the nearest neighbor class to process the input data.
-	private void NearestNeighborRadioButton(ActionEvent nn)
+	private void NearestNeighborRadioButton(ActionEvent e)
 	{
-		
+		//if the source of the event is the generate dashboard button, run the interpolator
+		if(e.getSource() == btBut0)
+		{
+			if(rbRdBut0.isEnabled())
+			{
+				
+			}
+			
+			
+			
+		}
 	}
 	
 }
