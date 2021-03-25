@@ -1,7 +1,7 @@
 Dynamic Weather Interpolator System (DWIS)
 
 This Java program opens a window with a user interface in it for inputting a location to get the mesonet data interpolated in one or more ways speficied by the respective radio buttons selected.
-Once the data is interpolated, the program generated a Grafana dashboard which can be viewed in any browser on port 3000 (type in "localhost:3000" as the URL). 
+Once the data is interpolated, the program generates a Grafana dashboard which can be viewed in any browser on port 3000 (type in "localhost:3000" as the URL) provided Grafana is installed properly. 
 
 Class files
   * GUIBuild: creates the user interface for entering location data and selecting interpolation methods. Also includes event handling.
