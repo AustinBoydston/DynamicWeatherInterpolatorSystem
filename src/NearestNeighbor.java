@@ -10,13 +10,13 @@
 public class NearestNeighbor {
 
 	//data fields
-	Station st
+	Station st = new Station();
 	
 	//constructor
 	NearestNeighbor(Double lat, Double lon)
 	{
-		this.lat = lat;
-		this.lon = lon;
+		//this.lat = lat;
+		//this.lon = lon;
 	}
 	
 	

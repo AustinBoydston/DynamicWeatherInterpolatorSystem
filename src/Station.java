@@ -38,7 +38,10 @@ public class Station {
 	private double minAirTemp;
 	private double precipitation;
 	
-	
+	Station()
+	{
+		
+	}
 	
 	//constructor
 	Station(String STID, String NAME, String ST, double LON, double LAT, int YEAR, int MO, int DA, int HR, int MI, double TAIR, double TDEW, double RELH, double CHIL, double HEAT, double WDIR, double WSPD, double WMAX, double PRES, double TMAX, double TMIN, double RAIN)

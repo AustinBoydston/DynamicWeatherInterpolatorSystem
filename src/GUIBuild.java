@@ -1,6 +1,7 @@
 	import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -17,7 +18,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 	 * @created February 25, 2021
 	 */
 	
-public class GUIBuild extends JFrame implements ActionListeneer {
+public class GUIBuild extends JFrame implements ActionListener {
 	
 	static GUIBuild theGUIBuild;
 
@@ -196,19 +197,21 @@ public class GUIBuild extends JFrame implements ActionListeneer {
 	
 	//The action event handler for the radio button labeled nearest neighbor (bRdBut0) 
 	//Calls the nearest neighbor class to process the input data.
-	private void NearestNeighborRadioButton(ActionEvent e)
-	{
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
 		//if the source of the event is the generate dashboard button, run the interpolator
-		if(e.getSource() == btBut0)
-		{
-			if(rbRdBut0.isEnabled())
-			{
-				
-			}
-			
-			
-			
-		}
+				if(e.getSource() == btBut0)
+				{
+					if(rbRdBut0.isEnabled())
+					{
+						
+					}
+					
+					
+					
+				}
 	}
 	
 }
