@@ -11,6 +11,8 @@ We can unit test our interpolation methods by inserting dummy data that we know 
 
 The inverse linear distance interpolation method will require similar unit tests on its distance functions, however it differs from nearest neighbor in that it calculates weighted averages and applies that to the incoming weather data. This method will also need to export its own data to prometheus likely in the form of a csv file so that our display software (Grafana) can collect and present it. 
 
+As of now, we only have the nearest neighbor interpolation at a state it can be tested. To verify that it works, a developer can run the project for unit testing and choose new coordinates to find the closest station. The file "locations.csv" in the DemoData file has the master list of all the stations and their coordinates that can be used to set the value to test against and act as a reference to manually verify the correctness of the algorithm. 
+
 
 
 
