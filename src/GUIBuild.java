@@ -2,6 +2,9 @@
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -20,6 +23,14 @@ import javax.swing.UnsupportedLookAndFeelException;
 	
 public class GUIBuild extends JFrame implements ActionListener {
 	
+	
+	//fields for scanning data
+	Scanner sc;  
+	String[][] set = new String[22][121];
+	int fileNum = 0;
+	
+	
+	//fields for the gui components 
 	static GUIBuild theGUIBuild;
 
 	JPanel pnPanel0;
@@ -35,8 +46,9 @@ public class GUIBuild extends JFrame implements ActionListener {
 	JLabel lbLabel3;
 	JLabel lbLabel6;
 	/**
+	 * @throws FileNotFoundException 
 	 */
-	public static void main( String args[] ) 
+	public static void main( String args[] ) throws FileNotFoundException 
 	{
 	   try 
 	   {
@@ -54,8 +66,14 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   catch ( UnsupportedLookAndFeelException e ) 
 	   {
 	   }
-	   theGUIBuild = new GUIBuild();
-	} 
+	 //  theGUIBuild = new GUIBuild();
+	   
+	   
+	   //test nearest neighbor
+	   NearestNeighbor nn1 = new NearestNeighbor(36.83, -99.64);
+	   nn1.populate();
+	   nn1.findClosest();
+	   	} 
 
 	/**
 	 */
@@ -82,6 +100,66 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbPanel0.setConstraints( btBut0, gbcPanel0 );
 	   pnPanel0.add( btBut0 );
 
+	   btBut0.addActionListener( new ActionListener() {
+	   //add action listener for Generate Dashboard button
+	   @Override
+		public void actionPerformed(ActionEvent e) {
+			
+			System.out.print(e.getSource());
+			//if the source of the event is the generate dashboard button, run the interpolator
+			
+					
+						//initialize scanner
+						try {
+						 sc = new Scanner(new File("C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\DemoData\\20210329000" + fileNum + ".csv"));
+						 sc.useDelimiter(",");
+						 int i = 0;
+						 //increment file counter (five minutes)
+						 fileNum += 5;
+						 while(sc.hasNext())
+						 {
+							 for(int j = 0; j < 121; j++)
+							 {
+								 if(sc.hasNext())
+							 set[i][j] = sc.next();
+							 }
+							// sc.nextLine();
+									 i++;
+						 }
+						 
+						 sc.close();
+						 
+						 for(int j = 0; j < i; j++)
+						 {
+							 System.out.println();
+							// for(int h = 0; h < 121; h++)
+							 {
+							//	 System.out.print(set[j][h]);
+							 }
+						 }
+						 
+						}
+						catch(FileNotFoundException e1)
+						{
+							//print error to console
+							//System.err.println(e1);
+						}
+						if(rbRdBut0.isEnabled())
+						{
+							
+						}
+						
+						
+						
+					}
+		
+	   
+	   });
+	   
+	   
+	   
+	   
+	   
 	   tfText0 = new JTextField( );
 	   gbcPanel0.gridx = 0;
 	   gbcPanel0.gridy = 5;
@@ -187,6 +265,12 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   setContentPane( pnPanel0 );
 	   pack();
 	   setVisible( true );
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	} 
 	
 
@@ -198,20 +282,6 @@ public class GUIBuild extends JFrame implements ActionListener {
 	//The action event handler for the radio button labeled nearest neighbor (bRdBut0) 
 	//Calls the nearest neighbor class to process the input data.
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-		//if the source of the event is the generate dashboard button, run the interpolator
-				if(e.getSource() == btBut0)
-				{
-					if(rbRdBut0.isEnabled())
-					{
-						
-					}
-					
-					
-					
-				}
-	}
+	
 	
 }
