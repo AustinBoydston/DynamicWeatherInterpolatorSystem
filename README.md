@@ -6,6 +6,7 @@ Once the data is interpolated, the program generates a Grafana dashboard which c
 Class files
   * GUIBuild: creates the user interface for entering location data and selecting interpolation methods. Also includes event handling.
   * NearestNeighbor: Calculates the nearest station to the inputed data and generates a dashboard with that stations weather data.
+  * NearestNeighborTest: The JunitTest class for the nearest neighbor interpolation algorithm.
   * Station: Represents a single station and the associated data it produces.
   * ScriptLaunchPad: intended to launch any neccessary shell scripts to accomplish the programs objective (will possibly be scrapped).
 
