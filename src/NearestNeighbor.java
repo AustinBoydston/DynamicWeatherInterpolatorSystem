@@ -105,10 +105,17 @@ public class NearestNeighbor {
 		return result;
 	}
 
+	//convert degrees into radians for calculations
 	private double toRadians(double degree) {
 		// conver the given value to radians
 		double oneDegree = (Math.PI) / 180;
 		return (oneDegree * degree);
 	}
 
+	//get the value in nearest
+	public String getNearest()
+	{
+		return nearest;
+	}
+	
 }
