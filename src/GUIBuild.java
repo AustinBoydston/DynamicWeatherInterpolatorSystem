@@ -40,6 +40,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 	JTextField tfText1;
 	JTextField tfText2;
 	JRadioButton rbRdBut0;
+	JRadioButton inverseButton;
 	JLabel lbLabel0;
 	JLabel lbLabel1;
 	JLabel lbLabel2;
@@ -66,13 +67,21 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   catch ( UnsupportedLookAndFeelException e ) 
 	   {
 	   }
-	 //  theGUIBuild = new GUIBuild();
+	 
 	   
+	  // theGUIBuild = new GUIBuild();
 	   
 	   //test nearest neighbor
-	   NearestNeighbor nn1 = new NearestNeighbor(36.83, -99.64);
-	   nn1.populate();
-	   nn1.findClosest();
+	  // NearestNeighbor nn1 = new NearestNeighbor(36.83, -99.64);
+	  
+	   //nn1.findClosest();
+	   
+//	Station st = new Station();
+//	st.populate();
+	   //test inverse linear distance
+	   InverseLinearDistance ln = new InverseLinearDistance(34.81, -98.02);
+	   ln.InverseLinearInterpolation();
+//	   
 	   	} 
 
 	/**
@@ -210,6 +219,19 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbPanel0.setConstraints( rbRdBut0, gbcPanel0 );
 	   pnPanel0.add( rbRdBut0 );
 
+	   inverseButton = new JRadioButton( "Inverse Linear Distance"  );
+	   rbgPanel0.add( inverseButton );
+	   gbcPanel0.gridx = 11;
+	   gbcPanel0.gridy = 12;
+	   gbcPanel0.gridwidth = 1;
+	   gbcPanel0.gridheight = 1;
+	   gbcPanel0.fill = GridBagConstraints.BOTH;
+	   gbcPanel0.weightx = 1;
+	   gbcPanel0.weighty = 0;
+	   gbcPanel0.anchor = GridBagConstraints.NORTH;
+	   gbPanel0.setConstraints( inverseButton, gbcPanel0 );
+	   pnPanel0.add( inverseButton );
+	   
 	   lbLabel0 = new JLabel( "Location Name"  );
 	   gbcPanel0.gridx = 0;
 	   gbcPanel0.gridy = 3;

@@ -9,7 +9,7 @@ class NearestNeighborTest {
 	@Test
 	void test() throws FileNotFoundException {
 		NearestNeighbor n1 = new NearestNeighbor(36.83, -99.64);
-		n1.populate();
+		
 		n1.findClosest(); 
 		
 		assertEquals("nearest is the wrong value.", n1.getNearest(), "BUFF");

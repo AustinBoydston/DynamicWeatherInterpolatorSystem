@@ -15,44 +15,32 @@ import java.util.Scanner;
 public class NearestNeighbor {
 
 	// data fields
-	Station st = new Station();
 
-	// station sets
-	private String[][] stations = new String[121][5];
+	//station object for calling station data
+	Station st;
 
+	//longitude and lattitude variables
 	private double Longitude;
 	private double Lattitude;
 
+	//return variable for the nearest station
 	private String nearest = "";
 
 	// constructor
 	NearestNeighbor(double lat, double lon) {
+		//initialize the lattitude and longitude
 		Longitude = lat;
 		Lattitude = lon;
-	}
-
-	// get location data of mesonet statoins and populate the array with it.
-	public void populate() throws FileNotFoundException {
-
-		Scanner sc = new Scanner(new File(
-				"C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\DemoData\\locations.csv"));
-		sc.useDelimiter(",");
-
-		int i = 0;
-
-		while (sc.hasNext() && i < 121) {
-			for (int j = 0; j < 5; j++) {
-				if (sc.hasNext() && i < 121)
-					stations[i][j] = sc.next();
+		
+		//initialize the station
+		try {
+		 st = new Station();
 			}
-			i++;
+		catch(FileNotFoundException fe)
+		{
+			System.err.println(fe);
 		}
-
-		/*
-		 * //see if it populated correctly for(int h = 0; h < 121; h++) { for(int j = 0;
-		 * j < 5; j++) { System.out.print(stations[h][j]); } System.out.println(); }
-		 */
-		sc.close();
+		
 	}
 
 	// set nearest to the closest station to the given coordinates
@@ -64,7 +52,7 @@ public class NearestNeighbor {
 
 		double temp = 0;
 		for (int i = 1; i < 121; i++) {
-			temp = distance(Longitude, Lattitude, Double.valueOf(stations[i][3]), Double.valueOf(stations[i][4]));
+			temp = distance(Longitude, Lattitude, Double.valueOf(st.getDataAtIndexes(i, 3)), Double.valueOf(st.getDataAtIndexes(i, 4)));
 			if (temp < shortestDistance) {
 				shortestDistance = temp;
 				getdex = i;
@@ -72,7 +60,7 @@ public class NearestNeighbor {
 		}
 
 		// set the value of the nearest station and print it
-		nearest = stations[getdex][0];
+		nearest = st.getDataAtIndexes(getdex, 0);
 		System.out.println(nearest);
 		;
 
@@ -90,8 +78,7 @@ public class NearestNeighbor {
 		// Haversine Formula
 		double dlong = lon2 - lon1;
 		double dlat = lat2 - lat1;
-		double result = Math.pow(Math.sin(dlat / 2), 2)
-				+ Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlong / 2), 2);
+		double result = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlong / 2), 2);
 
 		result = 2 * Math.asin(Math.sqrt(result));
 
@@ -101,21 +88,20 @@ public class NearestNeighbor {
 
 		// Calculate the result
 		result = result * r;
-
+		
 		return result;
 	}
 
-	//convert degrees into radians for calculations
+	// convert degrees into radians for calculations
 	private double toRadians(double degree) {
 		// conver the given value to radians
 		double oneDegree = (Math.PI) / 180;
 		return (oneDegree * degree);
 	}
 
-	//get the value in nearest
-	public String getNearest()
-	{
+	// get the value in nearest
+	public String getNearest() {
 		return nearest;
 	}
-	
+
 }

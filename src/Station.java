@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 /**
  * The station class represents a single mesonet station and its associated data like location, temperature, humidity etc
  * 
@@ -8,6 +12,9 @@
 
 public class Station {
 
+	private String[][] stations = new String[121][22];
+	
+	
 	//name and ID
 	private String StationID;
 	private String StationName;
@@ -38,9 +45,9 @@ public class Station {
 	private double minAirTemp;
 	private double precipitation;
 	
-	Station()
+	Station() throws FileNotFoundException
 	{
-		
+		populate();
 	}
 	
 	//constructor
@@ -80,9 +87,75 @@ public class Station {
 			precipitation =  RAIN;		
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// get location data of mesonet statoins and populate the array with it.
+		public void populate() throws FileNotFoundException {
 
+			Scanner sc = new Scanner(new File(
+					"C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\DemoData\\current.csv"));
+			sc.useDelimiter(",");
 
+			
+			for(int i = 0; i < 121; i++)
+			{
+				String[] temp = sc.nextLine().split(",");
+				for(int j = 0; j < 22; j++)
+				{
+				stations[i][j] = temp[j];
+				}
+			}
+			
+//			int i = 0;
+//
+//			while (sc.hasNextLine() && i < 121) {
+//				for (int j = 0; j < 22; j++) {
+//					if (sc.hasNext())
+//						stations[i][j] = sc.next();
+//				}
+//				i++;z
+		//}
+
+			
+//			  //see if it populated correctly 
+//			for(int h = 0; h < 121; h++) {
+//				for(int j = 0;j < 22; j++) { 
+//					System.out.print(stations[h][j] + ","); 
+//					}
+//				System.out.println();
+//				}
+			 
+			sc.close();
+		}
+
+	
+	//get the values from stations at the given index
+	public String getDataAtIndexes(int i, int j)
+	{
+		
+		if(i > 0 && i < 121 && j > 0 && j < 22)
+		{
+		return stations[i][j];
+		}
+		else {
+			System.err.println("getDataAtIndexes out of bounds");
+			return "";
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Getters
 	public String getStationID() {
 		return StationID;
