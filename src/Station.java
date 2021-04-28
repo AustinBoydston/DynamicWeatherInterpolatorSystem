@@ -37,7 +37,7 @@ public class Station {
 	private double relHumidity;
 	private double windChill;
 	private double heatIndex;
-	private double windDir;
+	private String windDir;
 	private double windSpeed;
 	private double maxWindSpeed;
 	private double airPressure;
@@ -51,7 +51,7 @@ public class Station {
 	}
 	
 	//constructor
-	Station(String STID, String NAME, String ST, double LON, double LAT, int YEAR, int MO, int DA, int HR, int MI, double TAIR, double TDEW, double RELH, double CHIL, double HEAT, double WDIR, double WSPD, double WMAX, double PRES, double TMAX, double TMIN, double RAIN)
+	public void setAllValues(String STID, String NAME, String ST, double LON, double LAT, int YEAR, int MO, int DA, int HR, int MI, double TAIR, double TDEW, double RELH, double CHIL, double HEAT, String WDIR, double WSPD, double WMAX, double PRES, double TMAX, double TMIN, double RAIN)
 	{
 		
 		//initialize name variables
@@ -141,16 +141,7 @@ public class Station {
 			System.err.println("getDataAtIndexes out of bounds");
 			return "";
 		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 	
 	
 	
@@ -262,7 +253,7 @@ public class Station {
 
 
 
-	public double getWindDir() {
+	public String getWindDir() {
 		return windDir;
 	}
 
@@ -419,7 +410,7 @@ public class Station {
 
 
 
-	public void setWindDir(double windDir) {
+	public void setWindDir(String windDir) {
 		this.windDir = windDir;
 	}
 

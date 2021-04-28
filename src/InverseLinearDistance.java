@@ -23,6 +23,8 @@ public class InverseLinearDistance {
 	private double lon;
 	private double lat;
 
+	private String[] outputMetrics = new String[22];
+	
 	// stores the row index of the stations close enough to the point to consider
 	// for the interpolation
 	private ArrayList<Integer> nearStationsIndex;
@@ -40,8 +42,19 @@ public class InverseLinearDistance {
 		n = 0;
 		nearStationsIndex = new ArrayList<Integer>();
 		nearStationsDistance = new ArrayList<Double>();
+		
+		for(int i = 0; i < 22; i++)
+		{
+			outputMetrics[i] = "";
+		}
+		
 	}
 
+	
+	/**
+	 * Calls functions to calculated the Inverse Linear Interpolation and sotres the results into the proper array location for exporting
+	 * 
+	 */
 	public void InverseLinearInterpolation() {
 		// call the near stations method to initialize the sister arrays of near
 		// stations
@@ -51,28 +64,78 @@ public class InverseLinearDistance {
 			// if the column is the station id set the value to the custom ID INVL for
 			// Inverse Linear
 			if (i == 0) {
+				outputMetrics[i] = "INVL";
 				System.out.print("INVL,");
 			}
 			// if the column is the name then set the value to the name given by the user.
 			else if (i == 1) {
+				outputMetrics[i] = "Location";
 				System.out.print("Location,");
 			}
 			// if the column is one of the time data columns print the time data
 			else if (i < 10) {
+				outputMetrics[i] = st.getDataAtIndexes(2,  i);
 				System.out.print(st.getDataAtIndexes(2, i) + ",");
 			}
 			// if the column is the wind direction column then print the wind direction of a
 			// close station
 			else if (i == 15) {
+				outputMetrics[i]=st.getDataAtIndexes(nearStationsIndex.get(0), i);
 				System.out.print(st.getDataAtIndexes(nearStationsIndex.get(0), i) + ",");
 			}
 			// if any other index then interpolate the data and print it
 			else {
+				outputMetrics[i] = String.valueOf(inverseLinearIth(i));
 				System.out.print(inverseLinearIth(i) + ",");
 			}
 		}
 	}
 
+	
+	
+/*
+ * return the output metrics array for the java exporter client
+ */
+	public String[] getOutputMetrics()
+	{
+		return outputMetrics;
+	}
+
+	
+	/*
+	 * set all the local variables to the out put of the inverse linear calculation
+	 */
+	public void setAllStationValues()
+	{
+		st.setStationID(outputMetrics[0]);
+		st.setStationName(outputMetrics[1]);
+		st.setState(outputMetrics[2]);
+		st.setLattitude(Double.parseDouble(outputMetrics[3]));
+		st.setLongitude(Double.parseDouble(outputMetrics[4]));
+		st.setYear(Integer.parseInt(outputMetrics[5]));
+		st.setMonth(Integer.parseInt(outputMetrics[6]));
+		st.setDay(Integer.parseInt(outputMetrics[7]));
+		st.setHour(Integer.parseInt(outputMetrics[8]));
+		st.setMinute(Integer.parseInt(outputMetrics[9]));
+		st.setAirTemp(Double.parseDouble(outputMetrics[10]));
+		st.setDewPointTemp(Double.parseDouble(outputMetrics[11]));
+		st.setRelHumidity(Double.parseDouble(outputMetrics[12]));
+		st.setWindChill(Double.parseDouble(outputMetrics[13]));
+		st.setHeatIndex(Double.parseDouble(outputMetrics[14]));
+		st.setWindDir(outputMetrics[15]);
+		st.setWindSpeed(Double.parseDouble(outputMetrics[16]));
+		st.setMaxWindSpeed(Double.parseDouble(outputMetrics[17]));
+		st.setAirPressure(Double.parseDouble(outputMetrics[18]));
+		st.setMaxAirTemp(Double.parseDouble(outputMetrics[19]));
+		st.setMinAirTemp(Double.parseDouble(outputMetrics[20]));
+		st.setDewPointTemp(Double.parseDouble(outputMetrics[21]));
+		
+	}
+	
+	
+	
+	
+	
 	/*
 	 * get the Inverse Linear value with the given stations
 	 * 
