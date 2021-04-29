@@ -105,26 +105,6 @@ public class Station {
 				stations[i][j] = temp[j];
 				}
 			}
-			
-//			int i = 0;
-//
-//			while (sc.hasNextLine() && i < 121) {
-//				for (int j = 0; j < 22; j++) {
-//					if (sc.hasNext())
-//						stations[i][j] = sc.next();
-//				}
-//				i++;z
-		//}
-
-			
-//			  //see if it populated correctly 
-//			for(int h = 0; h < 121; h++) {
-//				for(int j = 0;j < 22; j++) { 
-//					System.out.print(stations[h][j] + ","); 
-//					}
-//				System.out.println();
-//				}
-			 
 			sc.close();
 		}
 

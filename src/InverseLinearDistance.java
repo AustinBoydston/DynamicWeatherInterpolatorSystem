@@ -33,8 +33,8 @@ public class InverseLinearDistance {
 	private ArrayList<Double> nearStationsDistance;
 
 	// constructor: initializes the data fields
-	InverseLinearDistance(double longitude, double lattitude) throws FileNotFoundException {
-		st = new Station();
+	InverseLinearDistance(double longitude, double lattitude, Station station) throws FileNotFoundException {
+		st = station;
 		// st.populate();
 		lon = longitude;
 		lat = lattitude;
@@ -50,6 +50,23 @@ public class InverseLinearDistance {
 		
 	}
 
+	/**
+	 * runs all the top level methods in order
+	 */
+	public void run()
+	{
+		InverseLinearInterpolation();
+		setAllStationValues();
+	}
+	
+	/**
+	 * get the station as it is used here
+	 * @return
+	 */
+	public Station getStation()
+	{
+		return st;
+	}
 	
 	/**
 	 * Calls functions to calculated the Inverse Linear Interpolation and sotres the results into the proper array location for exporting

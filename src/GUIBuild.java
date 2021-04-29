@@ -2,9 +2,12 @@
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -15,6 +18,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import io.prometheus.client.Gauge;
 	/**
 	 * Dynamic Weather Interpolator System Interface
 	 * @author  Austin Boydston
@@ -28,6 +33,30 @@ public class GUIBuild extends JFrame implements ActionListener {
 	Scanner sc;  
 	String[][] set = new String[22][121];
 	int fileNum = 0;
+	
+	static private boolean exited = false;
+	Station st;
+	
+	
+	//metrics
+	static final Gauge  inprogressRequests = Gauge.build().name("dwis_inprogress_requests").help("Inprogress requests.").register();
+	static final Gauge AirTemperature = Gauge.build().name("dwis_air_temperature").help("Air Temperature").register();
+	static final Gauge DewPointTemperature = Gauge.build().name("dwis_dewpoint_temperature").help("Dewpoint Temperature").register();	
+	static final Gauge RelativeHumidity = Gauge.build().name("dwis_relative_humidity").help("Relative Humidity").register();
+	static final Gauge WindChill = Gauge.build().name("dwis_wind_chill").help("Wind Chill").register();
+	static final Gauge HeatIndex = Gauge.build().name("dwis_heat_index").help("Heat Index").register();
+	//static final Gauge WindDirection = Gauge.build().name("dwis_wind_direction").help("Wind Direction").register();
+	static final Gauge WindSpeed = Gauge.build().name("dwis_wind_speed").help("Wind Speed").register();	
+	static final Gauge MaxWindSpeed = Gauge.build().name("dwis_max_wind_speed").help("Max Wind Speed").register();
+	static final Gauge AirPressure = Gauge.build().name("dwis_air_pressure").help("Air Pressure").register();
+	static final Gauge MaxAirTemperature = Gauge.build().name("dwis_max_air_temperature").help("Max Air Temperature").register();
+	static final Gauge MinAirTemperature = Gauge.build().name("dwis_min_air_temperature").help("Min Air Temperature").register();
+	static final Gauge Precipitation = Gauge.build().name("dwis_precipitation").help("Precipitation").register();
+	
+	
+	//Class Object Declarations
+	InverseLinearDistance inv1;
+	NearestNeighbor n1;
 	
 	
 	//fields for the gui components 
@@ -70,26 +99,29 @@ public class GUIBuild extends JFrame implements ActionListener {
 	 
 	   
 	  // theGUIBuild = new GUIBuild();
+	   theGUIBuild.addWindowListener(new WindowAdapter() {
+	        @Override
+	        public void windowClosing(WindowEvent e) {
+	        	exited = true;
+	            System.exit(0);
+	        }
+	    });
 	   
-	   //test nearest neighbor
-	  // NearestNeighbor nn1 = new NearestNeighbor(36.83, -99.64);
-	  
-	   //nn1.findClosest();
-	   
-//	Station st = new Station();
-//	st.populate();
-	   //test inverse linear distance
-	   InverseLinearDistance ln = new InverseLinearDistance(34.81, -98.02);
-	   ln.InverseLinearInterpolation();
-//	   
 	   	} 
 
 	/**
+	 * @throws FileNotFoundException 
 	 */
-	public GUIBuild() 
+	public GUIBuild() throws FileNotFoundException 
 	{
+		
+		
 	   super( "TITLE" );
-
+	   
+	   //initialize the new station
+	   st = new Station();
+	   
+	   exited = false;
 	   //Primary Panel
 	   pnPanel0 = new JPanel();
 	   rbgPanel0 = new ButtonGroup();
@@ -109,65 +141,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbPanel0.setConstraints( btBut0, gbcPanel0 );
 	   pnPanel0.add( btBut0 );
 
-	   btBut0.addActionListener( new ActionListener() {
-	   //add action listener for Generate Dashboard button
-	   @Override
-		public void actionPerformed(ActionEvent e) {
-			
-			System.out.print(e.getSource());
-			//if the source of the event is the generate dashboard button, run the interpolator
-			
-					
-						//initialize scanner
-						try {
-						 sc = new Scanner(new File("C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\DemoData\\20210329000" + fileNum + ".csv"));
-						 sc.useDelimiter(",");
-						 int i = 0;
-						 //increment file counter (five minutes)
-						 fileNum += 5;
-						 while(sc.hasNext())
-						 {
-							 for(int j = 0; j < 121; j++)
-							 {
-								 if(sc.hasNext())
-							 set[i][j] = sc.next();
-							 }
-							// sc.nextLine();
-									 i++;
-						 }
-						 
-						 sc.close();
-						 
-						 for(int j = 0; j < i; j++)
-						 {
-							 System.out.println();
-							// for(int h = 0; h < 121; h++)
-							 {
-							//	 System.out.print(set[j][h]);
-							 }
-						 }
-						 
-						}
-						catch(FileNotFoundException e1)
-						{
-							//print error to console
-							//System.err.println(e1);
-						}
-						if(rbRdBut0.isEnabled())
-						{
-							
-						}
-						
-						
-						
-					}
-		
-	   
-	   });
-	   
-	   
-	   
-	   
+	 
 	   
 	   tfText0 = new JTextField( );
 	   gbcPanel0.gridx = 0;
@@ -286,16 +260,174 @@ public class GUIBuild extends JFrame implements ActionListener {
 
 	   setContentPane( pnPanel0 );
 	   pack();
+	   
+	   
+	   
+	  // btBut0.addActionListener( new ActionListener() {
+		   //add action listener for Generate Dashboard button
+		
+				
+				
+				
+				//if the source of the event is the generate dashboard button, run the interpolator
+				
+						
+//							//initialize scanner
+//							try {
+//							 sc = new Scanner(new File("C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\DemoData\\20210329000" + fileNum + ".csv"));
+//							 sc.useDelimiter(",");
+//							 int i = 0;
+//							 //increment file counter (five minutes)
+//							 fileNum += 5;
+//							 while(sc.hasNext())
+//							 {
+//								 for(int j = 0; j < 121; j++)
+//								 {
+//									 if(sc.hasNext())
+//								 set[i][j] = sc.next();
+//								 }
+//								// sc.nextLine();
+//										 i++;
+//							 }
+//							 
+//							 sc.close();
+//							 
+//							 for(int j = 0; j < i; j++)
+//							 {
+//								 System.out.println();
+//								// for(int h = 0; h < 121; h++)
+//								 {
+//								//	 System.out.print(set[j][h]);
+//								 }
+//							 }
+//							 
+//							}
+//							catch(FileNotFoundException e1)
+//							{
+//								//print error to console
+//								//System.err.println(e1);
+//							}
+//							if(rbRdBut0.isEnabled())
+//							{
+//								
+//							}
+							
+							
+							
+//						}
+			
+		   
+		 //  });
+		   
+		   
+		   
+		   
+	   
+	   
+	   
 	   setVisible( true );
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	} 
 	
-
+	  
+	   
+	
+	//return the bollean variable that detects if the window has been closed 
+	public boolean getExitBoolean()
+	{
+		return exited;
+	}
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+					System.out.print(e.getSource());
+					if(rbRdBut0.isSelected())
+					{
+						 n1 = new NearestNeighbor(Double.parseDouble(tfText1.getText()), Double.parseDouble(tfText2.getText()), st);
+						n1.run();
+						//update the local station object
+						st = n1.getStation();
+					}
+					else if(inverseButton.isSelected())
+					{
+						try {
+							 inv1 = new InverseLinearDistance(Double.parseDouble(tfText1.getText()), Double.parseDouble(tfText2.getText()), st);
+						} catch (NumberFormatException e1) {
+							
+							e1.printStackTrace();
+						} catch (FileNotFoundException e1) {
+							
+							e1.printStackTrace();
+						}
+						
+						inv1.run();
+						//update station object
+						st = inv1.getStation();
+					}
+					else {
+						
+					}
+					//run infinite loop of updating metrics until the program gui is exited
+					while(!getExitBoolean())
+					{
+						
+						
+					//set the metrics to the current time in order for the time series to properly report the time of the observations.	
+					AirTemperature.setToCurrentTime();
+					DewPointTemperature.setToCurrentTime();
+					RelativeHumidity.setToCurrentTime();
+					WindChill.setToCurrentTime();
+					HeatIndex.setToCurrentTime();
+					//WindDirection.setToCurrentTime();
+					WindSpeed.setToCurrentTime();
+					MaxWindSpeed.setToCurrentTime();
+					AirPressure.setToCurrentTime();
+					MaxAirTemperature.setToCurrentTime();
+					MinAirTemperature.setToCurrentTime();
+					Precipitation.setToCurrentTime();
+						
+						
+					//set all the metrics
+					AirTemperature.set(st.getAirTemp());
+					DewPointTemperature.set(st.getDewPointTemp());
+					RelativeHumidity.set(st.getRelHumidity());
+					WindChill.set(st.getWindChill());
+					HeatIndex.set(st.getHeatIndex());
+				//	WindDirection.set(st.getWindDir());
+					WindSpeed.set(st.getWindSpeed());
+					MaxWindSpeed.set(st.getMaxWindSpeed());
+					AirPressure.set(st.getAirPressure());
+					MaxAirTemperature.set(st.getMaxAirTemp());
+					MinAirTemperature.set(st.getMinAirTemp());
+					Precipitation.set(st.getPrecipitation());
+						
+						
+					
+						
+					//wait 30 seconds
+					try {
+					    TimeUnit.SECONDS.sleep(30);
+					} catch (InterruptedException ie) {
+					    Thread.currentThread().interrupt();
+					    System.err.println(ie);
+					}
+					
+					
+					
+					}
+					
+				}
+					
+	
+//	@Override
+//	public void actionPerformed(ActionEvent e) {
+//		// TODO Auto-generated method stub
+//		if(e.equals(e.getSource() == (btBut0))) {
+//			
+//		}
+//	} 
+//	
+  
 	//Action event handlers
 	
 	

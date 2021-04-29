@@ -24,25 +24,116 @@ public class NearestNeighbor {
 	private double Lattitude;
 
 	//return variable for the nearest station
+	private int nearestIndex = 0;
 	private String nearest = "";
-
+	private String[] outputMetrics = new String[22];
+	
+	
 	// constructor
-	NearestNeighbor(double lat, double lon) {
+	NearestNeighbor(double lat, double lon, Station station) {
 		//initialize the lattitude and longitude
 		Longitude = lat;
 		Lattitude = lon;
 		
 		//initialize the station
-		try {
-		 st = new Station();
-			}
-		catch(FileNotFoundException fe)
-		{
-			System.err.println(fe);
-		}
+		st = station;
 		
 	}
 
+	/**
+	 * Run all the methods in the Nearest Neighbor class
+	 */
+	public void run()
+	{
+		findClosest();
+		setOutputMetrics();
+		setAllStationValues();
+	}
+	
+	
+	/**
+	 * get the station as it's used here
+	 * @return
+	 */
+	public Station getStation()
+	{
+		return st;
+	}
+	
+	//set all the values of the outputMetrics array so that it can be passed on to the station object later
+	public void setOutputMetrics()
+	{
+		for (int i = 0; i < 22; i++) {
+			// if the column is the station id set the value to the custom ID INVL for
+			// Inverse Linear
+			if (i == 0) {
+				outputMetrics[i] = st.getDataAtIndexes(nearestIndex, i);
+				
+			}
+			// if the column is the name then set the value to the name given by the user.
+			else if (i == 1) {
+				outputMetrics[i] = st.getDataAtIndexes(nearestIndex, i);
+				
+			}
+			// if the column is one of the time data columns print the time data
+			else if (i < 10) {
+				outputMetrics[i] = st.getDataAtIndexes(2,  i);
+				
+			}
+			// if the column is the wind direction column then print the wind direction of a
+			// close station
+			else if (i == 15) {
+				outputMetrics[i]=st.getDataAtIndexes(nearestIndex, i);
+				
+			}
+			// if any other index then interpolate the data and print it
+			else {
+				outputMetrics[i] = st.getDataAtIndexes(nearestIndex, i);
+				//System.out.print(inverseLinearIth(i) + ",");
+			}
+		}
+	}
+	
+	/**
+	 * return the output metrics array for testing
+	 * @return
+	 */
+	public String[] getOutputMetricsArray()
+	{
+		return outputMetrics;
+	}
+	
+		/*
+		 * set all the local variables to the out put of the inverse linear calculation
+		 */
+		public void setAllStationValues()
+		{
+			st.setStationID(outputMetrics[0]);
+			st.setStationName(outputMetrics[1]);
+			st.setState(outputMetrics[2]);
+			st.setLattitude(Double.parseDouble(outputMetrics[3]));
+			st.setLongitude(Double.parseDouble(outputMetrics[4]));
+			st.setYear(Integer.parseInt(outputMetrics[5]));
+			st.setMonth(Integer.parseInt(outputMetrics[6]));
+			st.setDay(Integer.parseInt(outputMetrics[7]));
+			st.setHour(Integer.parseInt(outputMetrics[8]));
+			st.setMinute(Integer.parseInt(outputMetrics[9]));
+			st.setAirTemp(Double.parseDouble(outputMetrics[10]));
+			st.setDewPointTemp(Double.parseDouble(outputMetrics[11]));
+			st.setRelHumidity(Double.parseDouble(outputMetrics[12]));
+			st.setWindChill(Double.parseDouble(outputMetrics[13]));
+			st.setHeatIndex(Double.parseDouble(outputMetrics[14]));
+			st.setWindDir(outputMetrics[15]);
+			st.setWindSpeed(Double.parseDouble(outputMetrics[16]));
+			st.setMaxWindSpeed(Double.parseDouble(outputMetrics[17]));
+			st.setAirPressure(Double.parseDouble(outputMetrics[18]));
+			st.setMaxAirTemp(Double.parseDouble(outputMetrics[19]));
+			st.setMinAirTemp(Double.parseDouble(outputMetrics[20]));
+			st.setDewPointTemp(Double.parseDouble(outputMetrics[21]));
+			
+		}
+	
+	
 	// set nearest to the closest station to the given coordinates
 	public void findClosest() {
 		// Station st = new Station();
@@ -61,6 +152,7 @@ public class NearestNeighbor {
 
 		// set the value of the nearest station and print it
 		nearest = st.getDataAtIndexes(getdex, 0);
+		nearestIndex = getdex;
 		System.out.println(nearest);
 		;
 

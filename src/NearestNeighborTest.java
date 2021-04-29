@@ -8,11 +8,17 @@ class NearestNeighborTest {
 
 	@Test
 	void test() throws FileNotFoundException {
-		NearestNeighbor n1 = new NearestNeighbor(36.83, -99.64);
+		Station st = new Station();
+		NearestNeighbor n1 = new NearestNeighbor(36.83, -99.64, st);
 		
-		n1.findClosest(); 
+	//	n1.run(); 
+		n1.findClosest();
 		
-		assertEquals("nearest is the wrong value.", n1.getNearest(), "BUFF");
+		assertEquals(n1.getNearest(), "BUFF");
+		
+		n1.setOutputMetrics();
+		
+		assertEquals(n1.getOutputMetricsArray()[0], "BUFF");
 		//fail("Not yet implemented");
 	}
 
