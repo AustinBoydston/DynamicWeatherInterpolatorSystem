@@ -1,7 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 /**
  * Nearest Neighbor Interpolation Program
  * 
@@ -121,16 +117,34 @@ public class NearestNeighbor {
 			st.setAirTemp(Double.parseDouble(outputMetrics[10]));
 			st.setDewPointTemp(Double.parseDouble(outputMetrics[11]));
 			st.setRelHumidity(Double.parseDouble(outputMetrics[12]));
+			
+			try {
 			st.setWindChill(Double.parseDouble(outputMetrics[13]));
-			st.setHeatIndex(Double.parseDouble(outputMetrics[14]));
+			}
+			catch(NumberFormatException nfe1)
+			{
+				st.setWindChill(-999);
+			}
+			
+			try {
+				st.setHeatIndex(Double.parseDouble(outputMetrics[14]));	
+			}
+			catch(NumberFormatException nfe2)
+			{
+			st.setHeatIndex(-999);
+			}
 			st.setWindDir(outputMetrics[15]);
 			st.setWindSpeed(Double.parseDouble(outputMetrics[16]));
 			st.setMaxWindSpeed(Double.parseDouble(outputMetrics[17]));
 			st.setAirPressure(Double.parseDouble(outputMetrics[18]));
 			st.setMaxAirTemp(Double.parseDouble(outputMetrics[19]));
 			st.setMinAirTemp(Double.parseDouble(outputMetrics[20]));
+			try {
 			st.setDewPointTemp(Double.parseDouble(outputMetrics[21]));
-			
+			}
+			catch(NumberFormatException nfe3){
+				st.setDewPointTemp(-999);
+			}
 		}
 	
 	

@@ -113,7 +113,7 @@ public class Station {
 	public String getDataAtIndexes(int i, int j)
 	{
 		
-		if(i > 0 && i < 121 && j > 0 && j < 22)
+		if(i > 0 && i < 121 && j >= 0 && j < 22)
 		{
 		return stations[i][j];
 		}

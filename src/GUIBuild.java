@@ -2,9 +2,8 @@
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
+import java.awt.event.WindowListener;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +25,7 @@ import io.prometheus.client.Gauge;
 	 * @created February 25, 2021
 	 */
 	
-public class GUIBuild extends JFrame implements ActionListener {
+public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 	
 	
 	//fields for scanning data
@@ -62,17 +61,20 @@ public class GUIBuild extends JFrame implements ActionListener {
 	//fields for the gui components 
 	static GUIBuild theGUIBuild;
 
+	
+	//ActionListener generateDashboard;
+	
 	JPanel pnPanel0;
 	ButtonGroup rbgPanel0;
-	JButton btBut0;
+	JButton GenDashBut;
 	JTextField tfText0;
-	JTextField tfText1;
-	JTextField tfText2;
+	JTextField LonText;
+	JTextField LatText;
 	JRadioButton rbRdBut0;
 	JRadioButton inverseButton;
 	JLabel lbLabel0;
 	JLabel lbLabel1;
-	JLabel lbLabel2;
+	JLabel LonLabel;
 	JLabel lbLabel3;
 	JLabel lbLabel6;
 	/**
@@ -96,16 +98,11 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   catch ( UnsupportedLookAndFeelException e ) 
 	   {
 	   }
-	 
+//	 theGUIBuild = new GUIBuild(); 
 	   
 	  // theGUIBuild = new GUIBuild();
-	   theGUIBuild.addWindowListener(new WindowAdapter() {
-	        @Override
-	        public void windowClosing(WindowEvent e) {
-	        	exited = true;
-	            System.exit(0);
-	        }
-	    });
+	   
+	  
 	   
 	   	} 
 
@@ -121,6 +118,11 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   //initialize the new station
 	   st = new Station();
 	   
+//	  NearestNeighbor test = new NearestNeighbor(36.83, -99.64, st);
+//	   test.run();
+//	   System.out.println(test.getNearest());
+//	   
+	   
 	   exited = false;
 	   //Primary Panel
 	   pnPanel0 = new JPanel();
@@ -129,7 +131,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   GridBagConstraints gbcPanel0 = new GridBagConstraints();
 	   pnPanel0.setLayout( gbPanel0 );
 
-	   btBut0 = new JButton( "Generate Dashboard"  );
+	   GenDashBut = new JButton( "Generate Dashboard"  );
 	   gbcPanel0.gridx = 14;
 	   gbcPanel0.gridy = 18;
 	   gbcPanel0.gridwidth = 6;
@@ -138,9 +140,9 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbcPanel0.weightx = 1;
 	   gbcPanel0.weighty = 0;
 	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( btBut0, gbcPanel0 );
-	   pnPanel0.add( btBut0 );
-
+	   gbPanel0.setConstraints( GenDashBut, gbcPanel0 );
+	   pnPanel0.add( GenDashBut );
+	   GenDashBut.addActionListener(this);
 	 
 	   
 	   tfText0 = new JTextField( );
@@ -155,7 +157,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbPanel0.setConstraints( tfText0, gbcPanel0 );
 	   pnPanel0.add( tfText0 );
 
-	   tfText1 = new JTextField( );
+	   LonText = new JTextField( );
 	   gbcPanel0.gridx = 0;
 	   gbcPanel0.gridy = 9;
 	   gbcPanel0.gridwidth = 9;
@@ -164,10 +166,10 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbcPanel0.weightx = 1;
 	   gbcPanel0.weighty = 0;
 	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( tfText1, gbcPanel0 );
-	   pnPanel0.add( tfText1 );
+	   gbPanel0.setConstraints( LonText, gbcPanel0 );
+	   pnPanel0.add( LonText );
 
-	   tfText1 = new JTextField( );
+	   LatText = new JTextField( );
 	   gbcPanel0.gridx = 11;
 	   gbcPanel0.gridy = 9;
 	   gbcPanel0.gridwidth = 9;
@@ -176,8 +178,8 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbcPanel0.weightx = 1;
 	   gbcPanel0.weighty = 0;
 	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( tfText1, gbcPanel0 );
-	   pnPanel0.add( tfText1 );
+	   gbPanel0.setConstraints( LatText, gbcPanel0 );
+	   pnPanel0.add( LatText );
 
 	   
 	   rbRdBut0 = new JRadioButton( "Nearest Neighbor"  );
@@ -230,7 +232,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbPanel0.setConstraints( lbLabel1, gbcPanel0 );
 	   pnPanel0.add( lbLabel1 );
 
-	   lbLabel2 = new JLabel( "GPS Longitude"  );
+	   LonLabel = new JLabel( "GPS Longitude"  );
 	   gbcPanel0.gridx = 11;
 	   gbcPanel0.gridy = 7;
 	   gbcPanel0.gridwidth = 8;
@@ -239,8 +241,8 @@ public class GUIBuild extends JFrame implements ActionListener {
 	   gbcPanel0.weightx = 1;
 	   gbcPanel0.weighty = 1;
 	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( lbLabel2, gbcPanel0 );
-	   pnPanel0.add( lbLabel2 );
+	   gbPanel0.setConstraints( LonLabel, gbcPanel0 );
+	   pnPanel0.add( LonLabel );
 
 	  
 
@@ -260,90 +262,44 @@ public class GUIBuild extends JFrame implements ActionListener {
 
 	   setContentPane( pnPanel0 );
 	   pack();
+	         
 	   
-	   
-	   
-	  // btBut0.addActionListener( new ActionListener() {
-		   //add action listener for Generate Dashboard button
-		
-				
-				
-				
-				//if the source of the event is the generate dashboard button, run the interpolator
-				
-						
-//							//initialize scanner
-//							try {
-//							 sc = new Scanner(new File("C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\DemoData\\20210329000" + fileNum + ".csv"));
-//							 sc.useDelimiter(",");
-//							 int i = 0;
-//							 //increment file counter (five minutes)
-//							 fileNum += 5;
-//							 while(sc.hasNext())
-//							 {
-//								 for(int j = 0; j < 121; j++)
-//								 {
-//									 if(sc.hasNext())
-//								 set[i][j] = sc.next();
-//								 }
-//								// sc.nextLine();
-//										 i++;
-//							 }
-//							 
-//							 sc.close();
-//							 
-//							 for(int j = 0; j < i; j++)
-//							 {
-//								 System.out.println();
-//								// for(int h = 0; h < 121; h++)
-//								 {
-//								//	 System.out.print(set[j][h]);
-//								 }
-//							 }
-//							 
-//							}
-//							catch(FileNotFoundException e1)
-//							{
-//								//print error to console
-//								//System.err.println(e1);
-//							}
-//							if(rbRdBut0.isEnabled())
-//							{
-//								
-//							}
-							
-							
-							
-//						}
-			
-		   
-		 //  });
-		   
-		   
-		   
-		   
+	 
 	   
 	   
 	   
 	   setVisible( true );
+	   System.out.println("GUI Constructor Executed");
 	}
 
 	
 	  
 	   
 	
-	//return the bollean variable that detects if the window has been closed 
+	//return the boolean variable that detects if the window has been closed 
 	public boolean getExitBoolean()
 	{
 		return exited;
 	}
-				@Override
-				public void actionPerformed(ActionEvent e) {
+
+	
+//	 addWindowListener(new WindowAdapter() {
+//	        @Override
+//	        public void windowClosing(WindowEvent e) {
+//	        	exited = true;
+//	        	pnPanel0.
+//	            System.exit(0);
+//	        }
+//	    });
+	
+	
+		//Called by the action event handler for the generate dashboard button.			
+				private void generateDashboard(ActionEvent e) {
 					
 					System.out.print(e.getSource());
 					if(rbRdBut0.isSelected())
 					{
-						 n1 = new NearestNeighbor(Double.parseDouble(tfText1.getText()), Double.parseDouble(tfText2.getText()), st);
+						 n1 = new NearestNeighbor(Double.parseDouble(LonText.getText()), Double.parseDouble(LatText.getText()), st);
 						n1.run();
 						//update the local station object
 						st = n1.getStation();
@@ -351,7 +307,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 					else if(inverseButton.isSelected())
 					{
 						try {
-							 inv1 = new InverseLinearDistance(Double.parseDouble(tfText1.getText()), Double.parseDouble(tfText2.getText()), st);
+							 inv1 = new InverseLinearDistance(Double.parseDouble(LonText.getText()), Double.parseDouble(LatText.getText()), st);
 						} catch (NumberFormatException e1) {
 							
 							e1.printStackTrace();
@@ -365,7 +321,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 						st = inv1.getStation();
 					}
 					else {
-						
+						System.out.println("else executed");
 					}
 					//run infinite loop of updating metrics until the program gui is exited
 					while(!getExitBoolean())
@@ -388,6 +344,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 						
 						
 					//set all the metrics
+					System.out.println(st.getAirTemp());
 					AirTemperature.set(st.getAirTemp());
 					DewPointTemperature.set(st.getDewPointTemp());
 					RelativeHumidity.set(st.getRelHumidity());
@@ -406,7 +363,7 @@ public class GUIBuild extends JFrame implements ActionListener {
 						
 					//wait 30 seconds
 					try {
-					    TimeUnit.SECONDS.sleep(30);
+					    TimeUnit.SECONDS.sleep(5);
 					} catch (InterruptedException ie) {
 					    Thread.currentThread().interrupt();
 					    System.err.println(ie);
@@ -417,25 +374,61 @@ public class GUIBuild extends JFrame implements ActionListener {
 					}
 					
 				}
-					
-	
-//	@Override
-//	public void actionPerformed(ActionEvent e) {
-//		// TODO Auto-generated method stub
-//		if(e.equals(e.getSource() == (btBut0))) {
-//			
-//		}
-//	} 
-//	
-  
-	//Action event handlers
-	
-	
-	//Interpolator section of handlers
-	
-	//The action event handler for the radio button labeled nearest neighbor (bRdBut0) 
-	//Calls the nearest neighbor class to process the input data.
 
+				@Override
+				public void windowOpened(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void windowClosed(WindowEvent e) {
+					// TODO Auto-generated method stub
+					 if (theGUIBuild.isDisplayable()) {
+				          
+			             exited = true;
+			             theGUIBuild.dispose();
+			         }
+				}
+
+				@Override
+				public void windowIconified(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void windowDeiconified(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void windowActivated(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void windowDeactivated(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					//generate the values for the grafana dashboard
+					generateDashboard(e);
+				}
+
+				
 	
+
 	
 }
