@@ -1,0 +1,9 @@
+# Data
+
+First, for the data collection, Fabrizio's Python script will scrape Mesonet's website of its current data and output to a csv file, "current.csv" that denotes the current Mesonet readings. These readings are then parsed by Austin's Java code, reading from the file every 2 minutes by default or whatever time is specified. These readings are stored in a "Station" class object. The "Station" object has columns for each variable, and will take in the output from the csv file's rows and place the data in the column that it belongs to.
+
+# Deployment
+
+For deployment, using the Java Exporter Client native to Prometheus, we have an HTTP server that can read "gauges," or floating point values that Grafana reads. For any variable with a double floating point value, we create a gauge which is then pushed to the HTTP server. Gauges must be entered into Grafana and/or Prometheus query statements when attempting to return any of the data.
+
+As of right now, (4/29/21), both sides of the project (data collection and processing/publishing on Prometheus and Grafana) are complete with some minor bugs that need to be attended to. However, we still have to create an executable which will start the Python script and Java program, then start the Prometheus and/or Grafana server(s) which means that it will eventually be abstracted into one overall program.
