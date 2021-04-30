@@ -1,0 +1,13 @@
+# Development 
+Our project is nearly complete with most the requirements met up to this point. What remains is to debug some of the java program for some edge case scenarios and to configure the application to run on the Raspberry Pi Operating System. The program flow of the app follow this form:
+* First, for the data collection, Fabrizio's Python script will scrape Mesonet's website of its current data and output to a csv file, "current.csv" that denotes the current Mesonet readings. These readings are then parsed by Austin's Java code, reading from the file every 2 minutes by default or whatever time is specified. These readings are run through one of two interpolation algorithms that the user can select and the output is stored in a "Station" class object. The "Station" object has variables for each important data value and is later accessed by their respective getter method in order to set the value of the gauges that prometheus will read later.
+* The program will then enter an infinite loop of reading from the csv file, updating the gauges, and waiting 2 minutes until the applicaiton window is closed where it will then exit the loop and close the program. 
+* On the grafana/prometheus end, the gauges have a unique query statement associated with each one that can be used to extract the time series data from prometheus. 
+
+# Deployment
+
+For deployment, using the Java Exporter Client to prepare metrics that Prometheus can read, we have an HTTP server that makes data available by posting data values called "gauges", or floating point values that Prometheus/Grafana reads. For any weather variable with a double floating point value, we create a gauge which is then pushed to the HTTP server. Queries must be entered into Grafana and/or Prometheus when attempting to return any of the time series data.
+
+As of right now, (4/30/21), both sides of the project (data collection and processing/publishing on Prometheus and Grafana) are complete with some minor bugs that need to be attended to. However, we still have to create an executable which will start the Python script, Java program, and then start the Prometheus and/or Grafana server(s) which means that it will eventually be  aggregated into one overall program.
+
+After the initial set up in Grafana the data visualizations (dashboards) will be persistent and will not require any further alterations once they are setup, meaning after the first deployment the user will just have to login to the grafana account and navigate to the given dahsboards after running the executable and entering a location and selecting the interpolation algorithm from the GUI that appears.
