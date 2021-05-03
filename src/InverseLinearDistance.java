@@ -1,6 +1,8 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 /*
  * Class to calculate the inverse linear distance interpolation of the given location
  * 
@@ -16,7 +18,7 @@ public class InverseLinearDistance {
 	private int n;
 	// the maximum distance at which a station will be considered for interpolation:
 	// constant
-	private final double RANGE = 70;
+	private double range = 70;
 	private final int NUM_STATIONS = 121;
 	private final int GPS_INDEX = 3;
 
@@ -33,9 +35,10 @@ public class InverseLinearDistance {
 	private ArrayList<Double> nearStationsDistance;
 
 	// constructor: initializes the data fields
-	InverseLinearDistance(double longitude, double lattitude, Station station) throws FileNotFoundException {
+	InverseLinearDistance(double r, double longitude, double lattitude, Station station) throws FileNotFoundException {
 		st = station;
 		// st.populate();
+		range = r;
 		lon = longitude;
 		lat = lattitude;
 		p = 2;
@@ -45,7 +48,7 @@ public class InverseLinearDistance {
 		
 		for(int i = 0; i < 22; i++)
 		{
-			outputMetrics[i] = "";
+			outputMetrics[i] = "-999";
 		}
 		
 	}
@@ -79,6 +82,12 @@ public class InverseLinearDistance {
 		// loop through the column of the csv files data
 		for (int i = 0; i < 22; i++) {
 			// if the column is the station id set the value to the custom ID INVL for
+			if(nearStationsIndex.isEmpty())
+			{
+				JOptionPane.showMessageDialog(null, "The coordinates given are too far away for the range selected!");
+				return;
+			}
+			
 			// Inverse Linear
 			if (i == 0) {
 				outputMetrics[i] = "INVL";
@@ -211,7 +220,7 @@ public class InverseLinearDistance {
 			
 			// if the stations are within the range store the index and the distance in two
 			// sister arrays
-			if (temp <= RANGE) {
+			if (temp <= range) {
 				nearStationsIndex.add(i);
 				nearStationsDistance.add(temp);
 			}

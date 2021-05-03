@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -37,6 +38,9 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 	static private boolean exited = false;
 	Station st;
 
+	JSlider rangeSlide;
+	JLabel range;
+	
 	// metrics
 	static final Gauge inprogressRequests = Gauge.build().name("dwis_inprogress_requests").help("Inprogress requests.")
 			.register();
@@ -121,7 +125,7 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 		GridBagConstraints gbcPanel0 = new GridBagConstraints();
 		pnPanel0.setLayout(gbPanel0);
 
-		GenDashBut = new JButton("Generate Dashboard");
+		GenDashBut = new JButton("Generate Metrics");
 		gbcPanel0.gridx = 14;
 		gbcPanel0.gridy = 18;
 		gbcPanel0.gridwidth = 6;
@@ -244,6 +248,36 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 		gbPanel0.setConstraints(lbLabel6, gbcPanel0);
 		pnPanel0.add(lbLabel6);
 
+		
+		
+		rangeSlide = new JSlider(0, 200, 70);
+		rangeSlide.setMajorTickSpacing(50);
+		rangeSlide.setMinorTickSpacing(10);
+		rangeSlide.setPaintTicks(true);
+		rangeSlide.setPaintLabels(true);
+		gbcPanel0.gridx = 1;
+		gbcPanel0.gridy = 17;
+		gbcPanel0.gridwidth = 18;
+		gbcPanel0.gridheight = 16;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 1;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(rangeSlide, gbcPanel0);
+		pnPanel0.add(rangeSlide);
+
+		range = new JLabel("Max Range (ILD)");
+		gbcPanel0.gridx = 0;
+		gbcPanel0.gridy = 17;
+		gbcPanel0.gridwidth = 18;
+		gbcPanel0.gridheight = 16;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 1;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(range, gbcPanel0);
+		pnPanel0.add(range);
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		setContentPane(pnPanel0);
@@ -284,7 +318,7 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 			st = n1.getStation();
 		} else if (inverseButton.isSelected()) {
 			try {
-				inv1 = new InverseLinearDistance(Double.parseDouble(LonText.getText()),
+				inv1 = new InverseLinearDistance(rangeSlide.getValue(), Double.parseDouble(LonText.getText()),
 						Double.parseDouble(LatText.getText()), st);
 			} catch (NumberFormatException e1) {
 
