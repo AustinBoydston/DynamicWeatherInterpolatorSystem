@@ -1,4 +1,4 @@
-	import java.awt.GridBagConstraints;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,51 +19,54 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import io.prometheus.client.Gauge;
-	/**
-	 * Dynamic Weather Interpolator System Interface
-	 * @author  Austin Boydston
-	 * @created February 25, 2021
-	 */
-	
+
+/**
+ * Dynamic Weather Interpolator System Interface
+ * 
+ * @author Austin Boydston
+ * @created February 25, 2021
+ */
+
 public class GUIBuild extends JFrame implements ActionListener, WindowListener {
-	
-	
-	//fields for scanning data
-	Scanner sc;  
+
+	// fields for scanning data
+	Scanner sc;
 	String[][] set = new String[22][121];
 	int fileNum = 0;
-	
+	Thread thread = new Thread(new ThreadRunner());
 	static private boolean exited = false;
 	Station st;
-	
-	
-	//metrics
-	static final Gauge  inprogressRequests = Gauge.build().name("dwis_inprogress_requests").help("Inprogress requests.").register();
+
+	// metrics
+	static final Gauge inprogressRequests = Gauge.build().name("dwis_inprogress_requests").help("Inprogress requests.")
+			.register();
 	static final Gauge AirTemperature = Gauge.build().name("dwis_air_temperature").help("Air Temperature").register();
-	static final Gauge DewPointTemperature = Gauge.build().name("dwis_dewpoint_temperature").help("Dewpoint Temperature").register();	
-	static final Gauge RelativeHumidity = Gauge.build().name("dwis_relative_humidity").help("Relative Humidity").register();
+	static final Gauge DewPointTemperature = Gauge.build().name("dwis_dewpoint_temperature")
+			.help("Dewpoint Temperature").register();
+	static final Gauge RelativeHumidity = Gauge.build().name("dwis_relative_humidity").help("Relative Humidity")
+			.register();
 	static final Gauge WindChill = Gauge.build().name("dwis_wind_chill").help("Wind Chill").register();
 	static final Gauge HeatIndex = Gauge.build().name("dwis_heat_index").help("Heat Index").register();
-	//static final Gauge WindDirection = Gauge.build().name("dwis_wind_direction").help("Wind Direction").register();
-	static final Gauge WindSpeed = Gauge.build().name("dwis_wind_speed").help("Wind Speed").register();	
+	// static final Gauge WindDirection =
+	// Gauge.build().name("dwis_wind_direction").help("Wind Direction").register();
+	static final Gauge WindSpeed = Gauge.build().name("dwis_wind_speed").help("Wind Speed").register();
 	static final Gauge MaxWindSpeed = Gauge.build().name("dwis_max_wind_speed").help("Max Wind Speed").register();
 	static final Gauge AirPressure = Gauge.build().name("dwis_air_pressure").help("Air Pressure").register();
-	static final Gauge MaxAirTemperature = Gauge.build().name("dwis_max_air_temperature").help("Max Air Temperature").register();
-	static final Gauge MinAirTemperature = Gauge.build().name("dwis_min_air_temperature").help("Min Air Temperature").register();
+	static final Gauge MaxAirTemperature = Gauge.build().name("dwis_max_air_temperature").help("Max Air Temperature")
+			.register();
+	static final Gauge MinAirTemperature = Gauge.build().name("dwis_min_air_temperature").help("Min Air Temperature")
+			.register();
 	static final Gauge Precipitation = Gauge.build().name("dwis_precipitation").help("Precipitation").register();
-	
-	
-	//Class Object Declarations
+
+	// Class Object Declarations
 	InverseLinearDistance inv1;
 	NearestNeighbor n1;
-	
-	
-	//fields for the gui components 
+
+	// fields for the gui components
 	static GUIBuild theGUIBuild;
 
-	
-	//ActionListener generateDashboard;
-	
+	// ActionListener generateDashboard;
+
 	JPanel pnPanel0;
 	ButtonGroup rbgPanel0;
 	JButton GenDashBut;
@@ -77,211 +80,188 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 	JLabel LonLabel;
 	JLabel lbLabel3;
 	JLabel lbLabel6;
-	/**
-	 * @throws FileNotFoundException 
-	 */
-	public static void main( String args[] ) throws FileNotFoundException 
-	{
-	   try 
-	   {
-	      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	   }
-	   catch ( ClassNotFoundException e ) 
-	   {
-	   }
-	   catch ( InstantiationException e ) 
-	   {
-	   }
-	   catch ( IllegalAccessException e ) 
-	   {
-	   }
-	   catch ( UnsupportedLookAndFeelException e ) 
-	   {
-	   }
-//	 theGUIBuild = new GUIBuild(); 
-	   
-	  // theGUIBuild = new GUIBuild();
-	   
-	  
-	   
-	   	} 
 
 	/**
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
-	public GUIBuild() throws FileNotFoundException 
-	{
-		
-		
-	   super( "TITLE" );
-	   
-	   //initialize the new station
-	   st = new Station();
-	   
+	public static void main(String args[]) throws FileNotFoundException {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (UnsupportedLookAndFeelException e) {
+		}
+//	 theGUIBuild = new GUIBuild(); 
+
+		// theGUIBuild = new GUIBuild();
+
+	}
+
+	/**
+	 * @throws FileNotFoundException
+	 */
+	public GUIBuild() throws FileNotFoundException {
+
+		super("TITLE");
+
+		// initialize the new station
+		st = new Station();
+
 //	  NearestNeighbor test = new NearestNeighbor(36.83, -99.64, st);
 //	   test.run();
 //	   System.out.println(test.getNearest());
 //	   
-	   
-	   exited = false;
-	   //Primary Panel
-	   pnPanel0 = new JPanel();
-	   rbgPanel0 = new ButtonGroup();
-	   GridBagLayout gbPanel0 = new GridBagLayout();
-	   GridBagConstraints gbcPanel0 = new GridBagConstraints();
-	   pnPanel0.setLayout( gbPanel0 );
 
-	   GenDashBut = new JButton( "Generate Dashboard"  );
-	   gbcPanel0.gridx = 14;
-	   gbcPanel0.gridy = 18;
-	   gbcPanel0.gridwidth = 6;
-	   gbcPanel0.gridheight = 2;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 0;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( GenDashBut, gbcPanel0 );
-	   pnPanel0.add( GenDashBut );
-	   GenDashBut.addActionListener(this);
-	 
-	   
-	   tfText0 = new JTextField( );
-	   gbcPanel0.gridx = 0;
-	   gbcPanel0.gridy = 5;
-	   gbcPanel0.gridwidth = 9;
-	   gbcPanel0.gridheight = 2;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 0;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( tfText0, gbcPanel0 );
-	   pnPanel0.add( tfText0 );
+		exited = false;
+		// Primary Panel
+		pnPanel0 = new JPanel();
+		rbgPanel0 = new ButtonGroup();
+		GridBagLayout gbPanel0 = new GridBagLayout();
+		GridBagConstraints gbcPanel0 = new GridBagConstraints();
+		pnPanel0.setLayout(gbPanel0);
 
-	   LonText = new JTextField( );
-	   gbcPanel0.gridx = 0;
-	   gbcPanel0.gridy = 9;
-	   gbcPanel0.gridwidth = 9;
-	   gbcPanel0.gridheight = 2;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 0;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( LonText, gbcPanel0 );
-	   pnPanel0.add( LonText );
+		GenDashBut = new JButton("Generate Dashboard");
+		gbcPanel0.gridx = 14;
+		gbcPanel0.gridy = 18;
+		gbcPanel0.gridwidth = 6;
+		gbcPanel0.gridheight = 2;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 0;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(GenDashBut, gbcPanel0);
+		pnPanel0.add(GenDashBut);
+		GenDashBut.addActionListener(this);
 
-	   LatText = new JTextField( );
-	   gbcPanel0.gridx = 11;
-	   gbcPanel0.gridy = 9;
-	   gbcPanel0.gridwidth = 9;
-	   gbcPanel0.gridheight = 2;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 0;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( LatText, gbcPanel0 );
-	   pnPanel0.add( LatText );
+		tfText0 = new JTextField();
+		gbcPanel0.gridx = 0;
+		gbcPanel0.gridy = 5;
+		gbcPanel0.gridwidth = 9;
+		gbcPanel0.gridheight = 2;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 0;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(tfText0, gbcPanel0);
+		pnPanel0.add(tfText0);
 
-	   
-	   rbRdBut0 = new JRadioButton( "Nearest Neighbor"  );
-	   rbgPanel0.add( rbRdBut0 );
-	   gbcPanel0.gridx = 0;
-	   gbcPanel0.gridy = 12;
-	   gbcPanel0.gridwidth = 1;
-	   gbcPanel0.gridheight = 1;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 0;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( rbRdBut0, gbcPanel0 );
-	   pnPanel0.add( rbRdBut0 );
+		LonText = new JTextField();
+		gbcPanel0.gridx = 0;
+		gbcPanel0.gridy = 9;
+		gbcPanel0.gridwidth = 9;
+		gbcPanel0.gridheight = 2;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 0;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(LonText, gbcPanel0);
+		pnPanel0.add(LonText);
 
-	   inverseButton = new JRadioButton( "Inverse Linear Distance"  );
-	   rbgPanel0.add( inverseButton );
-	   gbcPanel0.gridx = 11;
-	   gbcPanel0.gridy = 12;
-	   gbcPanel0.gridwidth = 1;
-	   gbcPanel0.gridheight = 1;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 0;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( inverseButton, gbcPanel0 );
-	   pnPanel0.add( inverseButton );
-	   
-	   lbLabel0 = new JLabel( "Location Name"  );
-	   gbcPanel0.gridx = 0;
-	   gbcPanel0.gridy = 3;
-	   gbcPanel0.gridwidth = 9;
-	   gbcPanel0.gridheight = 2;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 1;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( lbLabel0, gbcPanel0 );
-	   pnPanel0.add( lbLabel0 );
+		LatText = new JTextField();
+		gbcPanel0.gridx = 11;
+		gbcPanel0.gridy = 9;
+		gbcPanel0.gridwidth = 9;
+		gbcPanel0.gridheight = 2;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 0;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(LatText, gbcPanel0);
+		pnPanel0.add(LatText);
 
-	   lbLabel1 = new JLabel( "GPS Latitude"  );
-	   gbcPanel0.gridx = 0;
-	   gbcPanel0.gridy = 7;
-	   gbcPanel0.gridwidth = 9;
-	   gbcPanel0.gridheight = 2;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 1;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( lbLabel1, gbcPanel0 );
-	   pnPanel0.add( lbLabel1 );
+		rbRdBut0 = new JRadioButton("Nearest Neighbor");
+		rbgPanel0.add(rbRdBut0);
+		gbcPanel0.gridx = 0;
+		gbcPanel0.gridy = 12;
+		gbcPanel0.gridwidth = 1;
+		gbcPanel0.gridheight = 1;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 0;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(rbRdBut0, gbcPanel0);
+		pnPanel0.add(rbRdBut0);
 
-	   LonLabel = new JLabel( "GPS Longitude"  );
-	   gbcPanel0.gridx = 11;
-	   gbcPanel0.gridy = 7;
-	   gbcPanel0.gridwidth = 8;
-	   gbcPanel0.gridheight = 2;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 1;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( LonLabel, gbcPanel0 );
-	   pnPanel0.add( LonLabel );
+		inverseButton = new JRadioButton("Inverse Linear Distance");
+		rbgPanel0.add(inverseButton);
+		gbcPanel0.gridx = 11;
+		gbcPanel0.gridy = 12;
+		gbcPanel0.gridwidth = 1;
+		gbcPanel0.gridheight = 1;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 0;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(inverseButton, gbcPanel0);
+		pnPanel0.add(inverseButton);
 
-	  
+		lbLabel0 = new JLabel("Location Name");
+		gbcPanel0.gridx = 0;
+		gbcPanel0.gridy = 3;
+		gbcPanel0.gridwidth = 9;
+		gbcPanel0.gridheight = 2;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 1;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(lbLabel0, gbcPanel0);
+		pnPanel0.add(lbLabel0);
 
-	   lbLabel6 = new JLabel( "Dynamic Weather Interpolator System"  );
-	   gbcPanel0.gridx = 1;
-	   gbcPanel0.gridy = 0;
-	   gbcPanel0.gridwidth = 18;
-	   gbcPanel0.gridheight = 3;
-	   gbcPanel0.fill = GridBagConstraints.BOTH;
-	   gbcPanel0.weightx = 1;
-	   gbcPanel0.weighty = 1;
-	   gbcPanel0.anchor = GridBagConstraints.NORTH;
-	   gbPanel0.setConstraints( lbLabel6, gbcPanel0 );
-	   pnPanel0.add( lbLabel6 );
+		lbLabel1 = new JLabel("GPS Latitude");
+		gbcPanel0.gridx = 0;
+		gbcPanel0.gridy = 7;
+		gbcPanel0.gridwidth = 9;
+		gbcPanel0.gridheight = 2;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 1;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(lbLabel1, gbcPanel0);
+		pnPanel0.add(lbLabel1);
 
-	   setDefaultCloseOperation( EXIT_ON_CLOSE );
+		LonLabel = new JLabel("GPS Longitude");
+		gbcPanel0.gridx = 11;
+		gbcPanel0.gridy = 7;
+		gbcPanel0.gridwidth = 8;
+		gbcPanel0.gridheight = 2;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 1;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(LonLabel, gbcPanel0);
+		pnPanel0.add(LonLabel);
 
-	   setContentPane( pnPanel0 );
-	   pack();
-	         
-	   
-	 
-	   
-	   
-	   
-	   setVisible( true );
-	   System.out.println("GUI Constructor Executed");
+		lbLabel6 = new JLabel("Dynamic Weather Interpolator System");
+		gbcPanel0.gridx = 1;
+		gbcPanel0.gridy = 0;
+		gbcPanel0.gridwidth = 18;
+		gbcPanel0.gridheight = 3;
+		gbcPanel0.fill = GridBagConstraints.BOTH;
+		gbcPanel0.weightx = 1;
+		gbcPanel0.weighty = 1;
+		gbcPanel0.anchor = GridBagConstraints.NORTH;
+		gbPanel0.setConstraints(lbLabel6, gbcPanel0);
+		pnPanel0.add(lbLabel6);
+
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+		setContentPane(pnPanel0);
+		pack();
+
+		setVisible(true);
+		System.out.println("GUI Constructor Executed");
 	}
 
-	
-	  
-	   
-	
-	//return the boolean variable that detects if the window has been closed 
-	public boolean getExitBoolean()
-	{
+	// return the boolean variable that detects if the window has been closed
+	public synchronized boolean getExitBoolean() {
 		return exited;
 	}
 
+	public synchronized void setExitBooleanTrue()
+	{
+		exited = true;
+	}
 	
 //	 addWindowListener(new WindowAdapter() {
 //	        @Override
@@ -291,144 +271,149 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 //	            System.exit(0);
 //	        }
 //	    });
-	
-	
-		//Called by the action event handler for the generate dashboard button.			
-				private void generateDashboard(ActionEvent e) {
-					
-					System.out.print(e.getSource());
-					if(rbRdBut0.isSelected())
-					{
-						 n1 = new NearestNeighbor(Double.parseDouble(LonText.getText()), Double.parseDouble(LatText.getText()), st);
-						n1.run();
-						//update the local station object
-						st = n1.getStation();
-					}
-					else if(inverseButton.isSelected())
-					{
-						try {
-							 inv1 = new InverseLinearDistance(Double.parseDouble(LonText.getText()), Double.parseDouble(LatText.getText()), st);
-						} catch (NumberFormatException e1) {
-							
-							e1.printStackTrace();
-						} catch (FileNotFoundException e1) {
-							
-							e1.printStackTrace();
-						}
-						
-						inv1.run();
-						//update station object
-						st = inv1.getStation();
-					}
-					else {
-						System.out.println("else executed");
-					}
-					//run infinite loop of updating metrics until the program gui is exited
-					while(!getExitBoolean())
-					{
-						
-						
-					//set the metrics to the current time in order for the time series to properly report the time of the observations.	
-					AirTemperature.setToCurrentTime();
-					DewPointTemperature.setToCurrentTime();
-					RelativeHumidity.setToCurrentTime();
-					WindChill.setToCurrentTime();
-					HeatIndex.setToCurrentTime();
-					//WindDirection.setToCurrentTime();
-					WindSpeed.setToCurrentTime();
-					MaxWindSpeed.setToCurrentTime();
-					AirPressure.setToCurrentTime();
-					MaxAirTemperature.setToCurrentTime();
-					MinAirTemperature.setToCurrentTime();
-					Precipitation.setToCurrentTime();
-						
-						
-					//set all the metrics
-					System.out.println(st.getAirTemp());
-					AirTemperature.set(st.getAirTemp());
-					DewPointTemperature.set(st.getDewPointTemp());
-					RelativeHumidity.set(st.getRelHumidity());
-					WindChill.set(st.getWindChill());
-					HeatIndex.set(st.getHeatIndex());
-				//	WindDirection.set(st.getWindDir());
-					WindSpeed.set(st.getWindSpeed());
-					MaxWindSpeed.set(st.getMaxWindSpeed());
-					AirPressure.set(st.getAirPressure());
-					MaxAirTemperature.set(st.getMaxAirTemp());
-					MinAirTemperature.set(st.getMinAirTemp());
-					Precipitation.set(st.getPrecipitation());
-						
-						
-					
-						
-					//wait 30 seconds
-					try {
-					    TimeUnit.SECONDS.sleep(5);
-					} catch (InterruptedException ie) {
-					    Thread.currentThread().interrupt();
-					    System.err.println(ie);
-					}
-					
-					
-					
-					}
-					
-				}
 
-				@Override
-				public void windowOpened(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
+	// Called by the thread that is created when the generate dashboard button is
+	// clicked.
+	protected void generateDashboard() {
 
-				@Override
-				public void windowClosed(WindowEvent e) {
-					// TODO Auto-generated method stub
-					 if (theGUIBuild.isDisplayable()) {
-				          
-			             exited = true;
-			             theGUIBuild.dispose();
-			         }
-				}
+		// System.out.print(e.getSource());
+		if (rbRdBut0.isSelected()) {
+			n1 = new NearestNeighbor(Double.parseDouble(LonText.getText()), Double.parseDouble(LatText.getText()), st);
+			n1.run();
+			// update the local station object
+			st = n1.getStation();
+		} else if (inverseButton.isSelected()) {
+			try {
+				inv1 = new InverseLinearDistance(Double.parseDouble(LonText.getText()),
+						Double.parseDouble(LatText.getText()), st);
+			} catch (NumberFormatException e1) {
 
-				@Override
-				public void windowIconified(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
+				e1.printStackTrace();
+			} catch (FileNotFoundException e1) {
 
-				@Override
-				public void windowDeiconified(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
+				e1.printStackTrace();
+			}
 
-				@Override
-				public void windowActivated(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
+			inv1.run();
+			// update station object
+			st = inv1.getStation();
+		} else {
+			System.out.println("else executed");
+		}
+		// run infinite loop of updating metrics until the program gui is exited
+		while (!getExitBoolean()) {
 
-				@Override
-				public void windowDeactivated(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
+			// set the metrics to the current time in order for the time series to properly
+			// report the time of the observations.
+			AirTemperature.setToCurrentTime();
+			DewPointTemperature.setToCurrentTime();
+			RelativeHumidity.setToCurrentTime();
+			WindChill.setToCurrentTime();
+			HeatIndex.setToCurrentTime();
+			// WindDirection.setToCurrentTime();
+			WindSpeed.setToCurrentTime();
+			MaxWindSpeed.setToCurrentTime();
+			AirPressure.setToCurrentTime();
+			MaxAirTemperature.setToCurrentTime();
+			MinAirTemperature.setToCurrentTime();
+			Precipitation.setToCurrentTime();
 
-				@Override
-				public void windowClosing(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
+			// set all the metrics
+			System.out.println(st.getAirTemp());
+			AirTemperature.set(st.getAirTemp());
+			DewPointTemperature.set(st.getDewPointTemp());
+			RelativeHumidity.set(st.getRelHumidity());
+			WindChill.set(st.getWindChill());
+			HeatIndex.set(st.getHeatIndex());
+			// WindDirection.set(st.getWindDir());
+			WindSpeed.set(st.getWindSpeed());
+			MaxWindSpeed.set(st.getMaxWindSpeed());
+			AirPressure.set(st.getAirPressure());
+			MaxAirTemperature.set(st.getMaxAirTemp());
+			MinAirTemperature.set(st.getMinAirTemp());
+			Precipitation.set(st.getPrecipitation());
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					//generate the values for the grafana dashboard
-					generateDashboard(e);
-				}
+			// wait 30 seconds
+			try {
+				TimeUnit.SECONDS.sleep(5);
+			} catch (InterruptedException ie) {
+				Thread.currentThread().interrupt();
+				System.err.println(ie);
+			}
 
-				
-	
+		}
 
-	
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		if (theGUIBuild.isDisplayable()) {
+
+			setExitBooleanTrue();
+			theGUIBuild.dispose();
+		}
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+		if (theGUIBuild.isDisplayable()) {
+
+			setExitBooleanTrue();
+			theGUIBuild.dispose();
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		//Start the thread to update the metrics if the thread has not already started
+		if (!thread.isAlive()) {
+			thread.start();
+		}
+	}
+
+	// define inner runnable class
+	public class ThreadRunner implements Runnable {
+
+		@Override
+		public void run() {
+
+			generateDashboard();
+			return;
+		}
+
+	}
+
 }
