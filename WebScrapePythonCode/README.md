@@ -1,4 +1,4 @@
-The file "mesonetWebScrap.py" contains functions that retrieve information from the website "mesonet.org". The end goal of this file is to create a dictionary object that contains the following information of each weather station: 
+The file "mesonetWebScrap.py" contains functions that retrieve information from the website "https://www.mesonet.org/data/public/mesonet/current/current.csv.txt". The end goal of this file is update the current.csv file located in the 'Data' directory with the following data: 
 
 - Latitude 
 - Longitude 
