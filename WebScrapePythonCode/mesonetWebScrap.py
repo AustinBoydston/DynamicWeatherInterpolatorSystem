@@ -5,27 +5,32 @@ from bs4 import BeautifulSoup
 
 
 def updateCSV():
-    page = requests.get(
-        'https://www.mesonet.org/data/public/mesonet/current/current.csv.txt')
-    soup = BeautifulSoup(page.content, 'html.parser')
+    try: 
+        page = requests.get('https://www.mesonet.org/data/public/mesonet/current/current.csv.txt')
+        soup = BeautifulSoup(page.content, 'html.parser')
 
-    weatherData = str(soup).split("\n")
+        weatherData = str(soup).split("\n")
 
-    noHeaderWeatherData = weatherData[1:len(weatherData)]
+        noHeaderWeatherData = weatherData[1:len(weatherData)]
 
-    file1 = open("../Data/"+"current.csv", "a")
+        file1 = open("current.csv", "a")
 
-    file1.truncate(0)
+        file1.truncate(0)
 
-    length = len(noHeaderWeatherData)
-    itr = 0
-    for data in noHeaderWeatherData:
-        file1.write(data)
-        if itr != len(noHeaderWeatherData):
-            file1.write("\n")
-        itr+=1 
+        length = len(noHeaderWeatherData)
+        itr = 0
+        for data in noHeaderWeatherData:
+            file1.write(data)
+            if itr != len(noHeaderWeatherData):
+                file1.write("\n")
+            itr+=1 
     
-    file1.close()
+        file1.close()
+
+    except IOError:
+        print("File is being used, trying again in a few seconds")
+        time.sleep(5)
+        updateCSV()
 
 def contiguousUpdate():
 
