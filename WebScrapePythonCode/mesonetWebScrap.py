@@ -1,154 +1,84 @@
 import requests
+import sys
+import os 
 from bs4 import BeautifulSoup
 
+import time
+import getch
 
-# Outputs array of htmls used to find location informations 
-def getDesc():
-    page = requests.get('http://www.mesonet.org/index.php/weather/local')
+def updateCSV():
+    page = requests.get(
+        'https://www.mesonet.org/data/public/mesonet/current/current.csv.txt')
     soup = BeautifulSoup(page.content, 'html.parser')
-    results = soup.find(id='Current_obs_map')
-    rawSite = results.find_all('area')
-    descriptions = []
-    for station in rawSite:
-        descriptions.append(station.get("alt"))
-        #print(station.get("alt"))
-    return descriptions
 
-#TODO: 
-# Outputs array of htmls used to find weather information 
-# def getDescT(url):
-#     page = requests.get(url)
-#     soup = BeautifulSoup(page.content, 'html.parser')
-#     result = soup.find(class="obs_temperatur")
-#     print(result)
+    weatherData = str(soup).split("\n")
 
-# Returns array of station abreviations 
-def getStations():
-    page = requests.get('http://www.mesonet.org/index.php/weather/local')
-    soup = BeautifulSoup(page.content, 'html.parser')
-    results = soup.find(id='Current_obs_map')
-    rawSite = results.find_all('area')
-    siteAbrev = []
-    for station in rawSite:
-        siteAbrev.append(station.get("stid"))
-    return siteAbrev
+    noHeaderWeatherData = weatherData[1:len(weatherData)]
 
-# Outputs array of urls to live weather stations websites
-def getURLs(stations):
-    siteURLs = []
-    for station in stations:
-        URL2 = 'http://www.mesonet.org/index.php/weather/local/'
-        URL2 += str(station)
-        siteURLs.append(URL2)
-    return siteURLs
+    file1 = open("current.csv", "a")
 
-#prints array 
-def printL(arr):
-    for x in arr:
-        print(arr[x])
+    file1.truncate(0)
 
-#works with arrays 
-def addTerm(desc, arr, pos):
-    cnt = 0
-    for t in arr:
-        #print(t)
-        temp = fData[cnt]
-        upd = {desc : t[pos][1]}
-        temp.update(upd)
-        fData[cnt] = temp
-        cnt += 1
-       
-
-        #fData[cnt] = {'name': siteAbrs[cnt], 'lat': locInfo[cnt][1][1], 'long': locInfo[cnt][2][1]}
-
-        # if(cnt in tempInfo):
-        #     print("found")
-        #     temp = fData[cnt]
-        #     upd = {'temp': tempInfo[cnt]}
-        #     temp.update(upd)
-        #     fData[cnt] = temp
-        # else:
-        #     print("didnt find")
-
-
-        
-
-
-# def getStationTemp(site):
-
-#     page = requests.get(site)
-#     soup = BeautifulSoup(page.content, 'html.parser')
-
-#     if(len(soup)>0):
-#         try:
-
-#             locMeso = soup.find_all('div', {'class': 'obs_temperature'})
-#             p1= str(locMeso).partition('>')
-#             p2= str(p1[2]).partition(' <')
-#         except:
-#             print("didnt work")
-#             return
-
-#    return(p2[0])
-
-#Returns nested array with location data for each weather station 
-def getLocData(descr):
+    length = len(noHeaderWeatherData)
+    itr = 0
+    for data in noHeaderWeatherData:
+        file1.write(data)
+        if itr != len(noHeaderWeatherData):
+            file1.write("\n")
+        itr+=1 
     
-    #Saves [pos][label][content]
-    #pos: 
-    #County 0 
-    #Latitude 1 
-    #Longitude 2 
-    #Elevation 3 
+    file1.close()
 
-    s1 = descr.split("</br>")
-    s2 = []
-    for x in s1:
-        s2.append(x.split(": "))
+def contiguousUpdate():
 
+    updateCSV() 
+    userInput = "" 
 
-    return s2
+    print("To exit update loop enter Ctrl-C")
 
+    while userInput != "0":
 
+        try:
+            while True:
 
-fData = {}
+                time.sleep(300)
 
-locInfo = []
+                updateCSV()
 
-tempInfo = []
-
-rawSiteDescT = []
-
-#Parse htmls 
-#
-#
-
-siteAbrs = getStations()
-
-urls = getURLs(siteAbrs)
-
-rawSiteDesc = getDesc()
-
-for x in rawSiteDesc:
-    locInfo.append(getLocData(x))
-    #print(getLocData(x))
+                print("Current.csv Updated")
+        except KeyboardInterrupt:
+            userInput = "0"
+            pass
 
 
-#Populate Dictionary 
-#
-#
+def main():
 
-itr = 0 
-for x in siteAbrs:
-    fData[itr] = {"Site" : x}
-    itr+=1
-    #print(fData[itr])
+    print("1: Continuous scrap, every 5 minutes")
+    print("2: Update file now")
+    print("3: print menu")
+    print("0: Exit program")
+
     
+    val = input("Enter one of the numbers listed above: ")
 
-addTerm("Latitude", locInfo, 1)
-addTerm("Longitude", locInfo, 2)
+    while val != "0":
+        if val == "1":
+            contiguousUpdate()
+        elif val == "2":
+            updateCSV()
+        elif val == "3":
+            print("1: Continuous scrap, every 5 minutes")
+            print("2: Update file now")
+            print("3: print options menu")
+            print("0: Exit program")
+        else:
+            print("Invalid input")
 
-print(fData)
+        print("\n")
+        val = input("Enter one of the numbers listed above: ")
 
-# TODO: Parse html to get array of temparature data for each station 
-# TODO: Integrate code to an endpoint 
+    print("End of program")
+
+
+if __name__ == "__main__":
+    main()
