@@ -15,7 +15,7 @@ def updateCSV():
 
     noHeaderWeatherData = weatherData[1:len(weatherData)]
 
-    file1 = open("current.csv", "a")
+    file1 = open("../Data/"+"current.csv", "a")
 
     file1.truncate(0)
 
