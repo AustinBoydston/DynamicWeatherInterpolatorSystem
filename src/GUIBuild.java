@@ -367,9 +367,9 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 			MinAirTemperature.set(st.getMinAirTemp());
 			Precipitation.set(st.getPrecipitation());
 
-			// wait 30 seconds
+			// wait 1 minute seconds
 			try {
-				TimeUnit.SECONDS.sleep(5);
+				TimeUnit.SECONDS.sleep(60);
 			} catch (InterruptedException ie) {
 				Thread.currentThread().interrupt();
 				System.err.println(ie);

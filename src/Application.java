@@ -20,7 +20,7 @@ public class Application {
 	public static void main(String args[]) throws IOException
 	{
 		metricsServer = new HTTPServer(8009);
-		System.out.println("App main executed");
+	//	System.out.println("App main executed");
 		gui = new GUIBuild();	
 		
 	}		
