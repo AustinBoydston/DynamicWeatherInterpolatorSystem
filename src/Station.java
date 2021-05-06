@@ -106,16 +106,32 @@ public class Station {
 
 	// get location data of mesonet statoins and populate the array with it.
 	public void populate() throws FileNotFoundException {
-
+		String[] temp = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
 		Scanner sc = new Scanner(new File(
-				"C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\DemoData\\current.csv"));
+				"C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\WebScrapePythonCode\\current.csv"));
 		sc.useDelimiter(",");
 
 		for (int i = 0; i < 121; i++) {
-			String[] temp = sc.nextLine().split(",");
+			try {
+			 temp = sc.nextLine().split(",");
+			}
+			catch(java.util.NoSuchElementException e)
+			{
+			 
+			}
 			for (int j = 0; j < 22; j++) {
+				try {
 				stations[i][j] = temp[j];
 			}
+				catch(ArrayIndexOutOfBoundsException e)
+				{
+					stations[i][j] = "";
+				}
+				catch(java.util.NoSuchElementException e)
+				{
+					stations[i][j] = "";
+				}
+				}
 		}
 		sc.close();
 	}

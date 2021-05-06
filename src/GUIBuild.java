@@ -30,6 +30,10 @@ import io.prometheus.client.Gauge;
 
 public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8538656869183871245L;
 	// fields for scanning data
 	Scanner sc;
 	String[][] set = new String[22][121];
@@ -116,7 +120,7 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 //	   test.run();
 //	   System.out.println(test.getNearest());
 //	   
-
+		System.out.println("GUI Constructor Executed");
 		exited = false;
 		// Primary Panel
 		pnPanel0 = new JPanel();
@@ -284,7 +288,7 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 		pack();
 
 		setVisible(true);
-		System.out.println("GUI Constructor Executed");
+		
 	}
 
 	// return the boolean variable that detects if the window has been closed
@@ -309,8 +313,19 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 	// Called by the thread that is created when the generate dashboard button is
 	// clicked.
 	protected void generateDashboard() {
-
+		while (!getExitBoolean()) {
 		// System.out.print(e.getSource());
+			try {
+				st.populate();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				try {
+					TimeUnit.SECONDS.sleep(5);
+				} catch (InterruptedException ie) {
+					Thread.currentThread().interrupt();
+					System.err.println(ie);
+				}
+			}
 		if (rbRdBut0.isSelected()) {
 			n1 = new NearestNeighbor(Double.parseDouble(LonText.getText()), Double.parseDouble(LatText.getText()), st);
 			n1.run();
@@ -335,7 +350,7 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 			System.out.println("else executed");
 		}
 		// run infinite loop of updating metrics until the program gui is exited
-		while (!getExitBoolean()) {
+		
 
 			// set the metrics to the current time in order for the time series to properly
 			// report the time of the observations.

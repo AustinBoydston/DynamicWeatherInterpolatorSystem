@@ -12,7 +12,7 @@ def updateCSV():
 
         weatherData = str(soup).split("\n")
 
-        noHeaderWeatherData = weatherData[1:len(weatherData)]
+        noHeaderWeatherData = weatherData[0:len(weatherData)]
 
         file1 = open("current.csv", "a")
 
