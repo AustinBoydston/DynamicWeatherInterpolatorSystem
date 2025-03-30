@@ -46,13 +46,10 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 	JLabel range;
 	
 	// metrics
-	static final Gauge inprogressRequests = Gauge.build().name("dwis_inprogress_requests").help("Inprogress requests.")
-			.register();
+	static final Gauge inprogressRequests = Gauge.build().name("dwis_inprogress_requests").help("Inprogress requests.").register();
 	static final Gauge AirTemperature = Gauge.build().name("dwis_air_temperature").help("Air Temperature").register();
-	static final Gauge DewPointTemperature = Gauge.build().name("dwis_dewpoint_temperature")
-			.help("Dewpoint Temperature").register();
-	static final Gauge RelativeHumidity = Gauge.build().name("dwis_relative_humidity").help("Relative Humidity")
-			.register();
+	static final Gauge DewPointTemperature = Gauge.build().name("dwis_dewpoint_temperature").help("Dewpoint Temperature").register();
+	static final Gauge RelativeHumidity = Gauge.build().name("dwis_relative_humidity").help("Relative Humidity").register();
 	static final Gauge WindChill = Gauge.build().name("dwis_wind_chill").help("Wind Chill").register();
 	static final Gauge HeatIndex = Gauge.build().name("dwis_heat_index").help("Heat Index").register();
 	// static final Gauge WindDirection =
@@ -60,10 +57,8 @@ public class GUIBuild extends JFrame implements ActionListener, WindowListener {
 	static final Gauge WindSpeed = Gauge.build().name("dwis_wind_speed").help("Wind Speed").register();
 	static final Gauge MaxWindSpeed = Gauge.build().name("dwis_max_wind_speed").help("Max Wind Speed").register();
 	static final Gauge AirPressure = Gauge.build().name("dwis_air_pressure").help("Air Pressure").register();
-	static final Gauge MaxAirTemperature = Gauge.build().name("dwis_max_air_temperature").help("Max Air Temperature")
-			.register();
-	static final Gauge MinAirTemperature = Gauge.build().name("dwis_min_air_temperature").help("Min Air Temperature")
-			.register();
+	static final Gauge MaxAirTemperature = Gauge.build().name("dwis_max_air_temperature").help("Max Air Temperature").register();
+	static final Gauge MinAirTemperature = Gauge.build().name("dwis_min_air_temperature").help("Min Air Temperature").register();
 	static final Gauge Precipitation = Gauge.build().name("dwis_precipitation").help("Precipitation").register();
 
 	// Class Object Declarations

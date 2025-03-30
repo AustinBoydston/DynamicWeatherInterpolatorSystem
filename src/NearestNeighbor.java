@@ -157,7 +157,15 @@ public class NearestNeighbor {
 
 		double temp = 0;
 		for (int i = 1; i < 121; i++) {
-			temp = distance(Longitude, Lattitude, Double.valueOf(st.getDataAtIndexes(i, 3)), Double.valueOf(st.getDataAtIndexes(i, 4)));
+			String test1 = (st.getDataAtIndexes(i, 3));
+			String test2 = (st.getDataAtIndexes(i, 4));
+			//check if the value from the csv is empty, if so give it un-usable dummy data to remove it from consideration.
+			if (test2.trim() == "" | test1.trim() == ""){
+				temp = 999999999.99;
+			}
+			else{
+				temp = distance(Longitude, Lattitude, Double.valueOf(st.getDataAtIndexes(i, 3)), Double.valueOf(st.getDataAtIndexes(i, 4)));
+			}
 			if (temp < shortestDistance) {
 				shortestDistance = temp;
 				getdex = i;
@@ -168,7 +176,7 @@ public class NearestNeighbor {
 		nearest = st.getDataAtIndexes(getdex, 0);
 		nearestIndex = getdex;
 		System.out.println(nearest);
-		;
+		
 
 	}
 
