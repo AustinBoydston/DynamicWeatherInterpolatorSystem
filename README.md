@@ -21,7 +21,7 @@ Once the data is interpolated, the program generates a Grafana dashboard which c
    * then type 1 and press enter to run the web scrapper. 
 ### Install Prometheus and set up environment variable for it
    * Download at: https://prometheus.io/docs/prometheus/latest/installation/
-   * copy and paste the configuration yml file from the repository to replace the original yml file that comes with prometheus.
+   * copy and paste the configuration yml file from the data folder to replace the original yml file that comes with prometheus in the prometheus install directory.
    * Run prometheus with ``` ./prometheus ``` in the commandline after navigating to the prometheus install directory.
 ### Run Java Program with maven
    * Go to the project root directory and run the command:
