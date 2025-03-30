@@ -108,7 +108,7 @@ public class Station {
 	public void populate() throws FileNotFoundException {
 		String[] temp = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
 		Scanner sc = new Scanner(new File(
-				"C:\\Users\\ATB\\eclipse-workspace-2021\\DynamicWeatherInterpolatorSystem\\WebScrapePythonCode\\current.csv"));
+				"C:\\Users\\Austin\\Documents\\GitHub\\DynamicWeatherInterpolatorSystem\\WebScrapePythonCode\\current.csv"));
 		sc.useDelimiter(",");
 
 		for (int i = 0; i < 121; i++) {
